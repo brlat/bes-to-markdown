@@ -1,5 +1,5 @@
 $in = "$ARGV[0]";
-die "入力ファイルを指定してください\n" unless $in;
+die "usage1: perl bes2md.pl input.bes\nusage2: bes2md.exe input.bes\n" unless $in;
 
 $out = "$in" . ".md";
 
