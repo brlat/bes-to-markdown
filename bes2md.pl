@@ -1,3 +1,10 @@
+# .bes形式の点字データをユニコード点字のmarkdownテキストファイルに変換
+# 使い方:
+# perl bes2md.pl input.bes
+# input.bes.md というファイル名で出力
+# または、perl のppコマンドで.exe化したものの場合:
+# bes2md.exe input.bes
+
 $in = "$ARGV[0]";
 die "usage1: perl bes2md.pl input.bes\nusage2: bes2md.exe input.bes\n" unless $in;
 
@@ -13,6 +20,7 @@ open(OUT, ">$out");
 $header_byte = 1028;
 read(IN,$b,$header_byte);
 
+# ますあけを数えるための変数
 $number_of_space = 0;
 
 while (read(IN,$b,1)) {
@@ -22,8 +30,10 @@ $bytedata = unpack("h2", $b);
 
 # マスあけ
 if($bytedata =~ s/0a/⠀/){
+# ますあけが連続している数を数える
 $number_of_space++;
 }else{
+# ますあけの連続をキャンセルする
 $number_of_space = 0;
 
 # 行替え
@@ -106,6 +116,7 @@ $bytedata =~ s/0d/⠰/;
 $bytedata =~ s/0c/⠠/;
 }
 
+# ますあけ連続4つあったときに、markdownの見出し「#」をつける
 if($number_of_space == 4){
 print OUT ("\n\n# ⠀⠀⠀⠀");
 }

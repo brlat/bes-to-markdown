@@ -10,27 +10,19 @@ iOSのブラウザでhtmlファイルを開くと、VoiceOverのローター機�
 
 これを利用して点字データのページ行や４マスのますあけがあるところにhtmlの見出しタグを入れて、ページをめくったり、見出し位置へ移動しやすくなります。
 
-		VoiceOverには画面に表示される文字(英語や日本語、韓国語など)を自動点訳して点字ディスプレイに表示する機能があります。
+htmlに直接変換せずに、markdownのテキストファイルに変換する理由は、htmlより内容の修正が簡単で管理しやすいからです。
 
-英語で書かれたウェブページやKindleの電子書籍などをを読む場合には大きな問題はないのですが、VoiceOverの日本語の自動点訳は間違いが多く、あまり実用的なレベルではありません。
-
-このスクリプトは、すでに点訳された点字のデータを点字のデータとして表示するもので、言語には関係なく、6点の点字のパターンとして点字データを読むことができます。
-
-なので、.brf形式の点字で点訳されていれば、日本語でも英語でも韓国語でも、楽譜でも、数式でも、点字で読むことができます。
-
-たとえば点字の点のパターン⠊(2 4の点)は、文脈によって「i」、「9」、「お」、音符の「ラ」を表しています。
+htmlに変換してしまうと、ユニコードの点字データ以外に<p>や<h1>などタグが入ってきますが、markdownでは空白行で段落、#で見出し、*で箇条書きの記号が行頭に来るだけなので、ほぼテキストファイルのままです。
 
 ## 変換の仕方
 
 Windowsのコマンドプロンプトで:
 
-> brf2md.exe sample.brf
+> bes2md.exe sample.bes
 
-のように変換したい.brfファイルを指定すると、sample.brf.mdというファイルが出力されます。
+のように変換したい.besファイルを指定すると、sample.bes.mdというファイルが出力されます。
 
-brf2md.exeのショートカットを「送る」メニューに登録して変換することもできます。
-
-Bookshareの.brfでは原本のページ番号が「--------1」、「-------2」のように連続した「-」の後にページとなっているので、この行をにmarkdownの箇条書きの記号「*」を入れています。
+bes2md.exeのショートカットを「送る」メニューに登録して変換することもできます。
 
 半角スペースが4つあるところにmarkdownの見出し記号「#」を入れています。
 
@@ -40,44 +32,26 @@ Windowsの場合はpandocで変換してブラウザで読むことができま�
 
 iOSの場合はmarkdownファイルをhtmlとしてプレビューできるアプリが必要です。
 
+たとえば次のようなアプリがVoiceOverで使いやすいです。
+
 - [無料・広告付き ‎Edhita: Text Editor on the App Store](https://itunes.apple.com/us/app/edhita-text-editor/id398896655?mt=8)
 - [720円 ‎「Byword」をApp Storeで](https://itunes.apple.com/jp/app/byword/id482063361?mt=8)
 - [いつの間にかByword神がかってた - /]()
 - [Byword | AppleVis](https://www.applevis.com/apps/ios/productivity/byword)
 
+ユニコード点字をVoiceOverで点字ディスプレイに表示するには、VoiceOverのローターで言語を英語、8点点字に切り替える必要があります。
+
 ## 動作環境・使用上の注意
 
 .plのスクリプトは、Strawberry perlのポータブル版で実行できます。
 
-または.exe版はperlが組み込まれているので単体で使用できます。
+または.exe版はperlが組み込まれているので単体で使用でき、「送る」メニューに登録したり、「プログラムから開く」で実行できます。
 
 - [Strawberry Perl for Windows - Releases](http://strawberryperl.com/releases.html)
 
-.plのスクリプトの実行にはperlのポータブル版以外に、Convert::Brailleモジュールのインストールとその修正が必要です。(.exe版には修正されたbraille.pmが入っています。)
+bes2md.plはperlが実行できる状態で、下記のようにすると変換ができます。
 
-portableshell.batを実行後、次のようにしてモジュールをインストールします。
-
-> cpan Convert::Braille
-
-インストール後に下記の場所にあるBraille.pmを、 [私の別のリポジトリにあるbraille.pm](https://github.com/brlat/Convert-Braille-patch) と置き換えます。
-
-> ./perl/site/lib/Convert/Braille.pm
-
-## 使い方
-
-brl2utf8.exeはコマンドプロンプトで
-
-> brl2utf8 input.brf
-
-とすると実行できます。
-
-または「送る」メニューに登録したり、「プログラムから開く」で実行できます。
-
-brl2utf8.plはperlが実行できる状態で、下記のようにすると変換ができます。
-
-> perl brl2utf8.pl input.brf
-
-小文字NABCCの.brlファイルや.bseファイルも変換できます。ただしヘッダ部分やページの扱いなどはうまく変換できません。
+> perl bes2md.pl sample.bes
 
 ## PAR::Packerモジュールで.exeファイルに変換
 
